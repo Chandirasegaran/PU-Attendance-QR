@@ -1,62 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>M.Sc Attendance QR</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.Sc Attendance QR</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
+
 <body>
-  <!-- <div id="rightCornerImage"> -->
+    <!-- <div id="rightCornerImage"> -->
     <img id="logo" src="logo.png" alt="PU Logo">
-<!-- </div> -->
-  <h1>PONDICHERRY UNIVERSITY</h1>
-  <h2>DEPARTMENT OF COMPUTER SCIENCE</h2>
-  <h3>Get Your QR for Attendance</h3>
+    <!-- </div> -->
+    <h1>PONDICHERRY UNIVERSITY</h1>
+    <h2>DEPARTMENT OF COMPUTER SCIENCE</h2>
+    <h3>Get Your QR for Attendance</h3>
 
-  <input type="text" id="register_number" placeholder="Enter register number">
-  <button type="button" onclick="displayImage()">Get QR</button>
+    <input type="text" id="register_number" placeholder="Enter register number">
+    <button type="button" onclick="displayImage()">Get QR</button>
 
-  <img id="image" src="" alt="">
-  <a id="downloadButton" style="display: none;" download>Download QR</a>
+    <img id="image" src="" alt="">
+    <a id="downloadButton" style="display: none;" download>Download QR</a>
 
-  <script>
-    
-    function getRegisterNumber() {
-      var registerNumber = document.getElementById("register_number").value;
-      return registerNumber;
-    }
+    <script>
 
-    
-    function displayImage() {
-      
-      var registerNumber = getRegisterNumber();
+        function getRegisterNumber() {
+            var registerNumber = document.getElementById("register_number").value;
+            return registerNumber;
+        }
 
-      
-      if (!/^\d+$/.test(registerNumber)) {
-        alert("Invalid register number.");
-        return;
-      }
 
-      
-      var imagePath = "assets/" + registerNumber + ".png";
+        function displayImage() {
 
-      
-      var image = new Image();
-      image.onload = function() {
-        
-        var imageView = document.getElementById("image");
-        imageView.src = imagePath;
+            var registerNumber = getRegisterNumber();
 
-        
-        var downloadButton = document.getElementById("downloadButton");
-        downloadButton.style.display = "block";
-        downloadButton.href = imagePath;
-      };
-      image.onerror = function() {
-        
-        alert("Image file not found.");
-      };
-      image.src = imagePath;
-    }
-  </script>
+
+            if (!/^\d+$/.test(registerNumber)) {
+                alert("Invalid register number.");
+                return;
+            }
+
+
+            var imagePath = "assets/" + registerNumber + ".png";
+
+
+            var image = new Image();
+            image.onload = function () {
+
+                var imageView = document.getElementById("image");
+                imageView.src = imagePath;
+
+
+                var downloadButton = document.getElementById("downloadButton");
+                downloadButton.style.display = "block";
+                downloadButton.href = imagePath;
+            };
+            image.onerror = function () {
+
+                alert("Image file not found.");
+            };
+            image.src = imagePath;
+        }
+    </script>
 </body>
+
 </html>
