@@ -1,0 +1,93 @@
+/* Style for the body */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background-color: lightblue;
+
+}
+
+h3 {
+  color: #333;
+}
+
+
+input[type="text"] {
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin: 10px;
+}
+
+
+button {
+  padding: 10px 20px;
+  background-color: red;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
+#logo {
+  width: 15%;
+  /* max-width: 50%; */
+  margin: 20px auto;
+  margin-bottom: 20px;
+  display: block;
+}
+
+img {
+  max-width: 100%;
+  margin: 20px auto;
+  margin-bottom: 20px;
+  display: block;
+}
+
+a#downloadButton {
+  display: none;
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px 10px;
+  /* Adjust padding to make the button smaller */
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 12px;
+  /* Adjust font size to make the button text smaller */
+  margin: 10px auto;
+  width: 100px;
+
+}
+
+
+button:hover,
+a#downloadButton:hover {
+  background-color: #0056b3;
+}
+
+
+.alert {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  #logo {
+    width: 30%;
+  }
+}
+
+
+
+
+
