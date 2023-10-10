@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        /* Custom CSS for color theme and centering content */
+        body {
+            background-color: rgba(150, 235, 153, 1); /* ARGB(255, 150, 235, 153) */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .qr-code-container {
+            text-align: center;
+        }
+        .qr-code {
+            margin: 0 auto;
+            border: 37.8px solid #fff; /* Add a 1cm border (approximately 37.8px) */
+        }
+    </style>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include html2canvas library -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">QR Code Generator</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="regNo">Registration Number:</label>
+                    <input type="text" class="form-control" id="regNo" placeholder="Enter Registration Number">
+                </div>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter Name">
+                </div>
+                <button class="btn btn-primary" id="generateQR">Generate QR Code</button>
+            </div>
+            <div class="col-md-6">
+                <div class="qr-code-container">
+                    <div id="combinedImageContainer" class="qr-code"></div>
+                </div>
+                <a id="downloadLink" style="display: none;" download="combined.png">Download Combined Image</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JavaScript (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    <!-- Include QR code library JavaScript -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script>
+        // Get the registration number and name input fields
+        const regNoInput = document.getElementById('regNo');
+        const nameInput = document.getElementById('name');
+
+        // Get the combined image container and download link elements
+        const combinedImageContainer = document.getElementById('combinedImageContainer');
+        const downloadLink = document.getElementById('downloadLink');
+
+        // Function to generate and display the combined image
+        function generateCombinedImage() {
+            const regNo = regNoInput.value;
+            const name = nameInput.value;
+
+            if (regNo) {
+                // Create a new QRCode instance
+                const qrcode = new QRCode(combinedImageContainer, {
+                    text: regNo,
+                    width: 290, // Adjust the width as needed
+                    height: 290, // Adjust the height as needed
+                });
+
+                // Create a div element for displaying the text
+                const textDiv = document.createElement('div');
+                textDiv.innerHTML = `<p>Registration Number: ${regNo}</p><p>Name: ${name}</p>`;
+                combinedImageContainer.appendChild(textDiv);
+
+                // Enable the download link and set its href attribute to the combined image
+                html2canvas(combinedImageContainer, { scale: 2 }).then(canvas => {
+                    downloadLink.href = canvas.toDataURL('image/png');
+                    downloadLink.style.display = 'block';
+                });
+            } else {
+                // Clear the combined image container and hide the download link if there's no input
+                combinedImageContainer.innerHTML = '';
+                downloadLink.style.display = 'none';
+            }
+        }
+
+        // Attach an event listener to the "Generate Combined Image" button
+        document.getElementById('generateQR').addEventListener('click', generateCombinedImage);
+
+        // Initial combined image generation (empty)
+        generateCombinedImage();
+    </script>
+</body>
+</html>
