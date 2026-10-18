@@ -1,110 +1,76 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
-    <style>
-        /* Custom CSS for color theme and centering content */
-        body {
-            background-color: rgba(150, 235, 153, 1); /* ARGB(255, 150, 235, 153) */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-        .qr-code-container {
-            text-align: center;
-        }
-        .qr-code {
-            margin: 0 auto;
-            border: 37.8px solid #fff; /* Add a 1cm border (approximately 37.8px) */
-        }
-    </style>
-    <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Include html2canvas library -->
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attendance QR · Pondicherry University</title>
+  <meta name="description" content="Generate and download your attendance QR code — Department of Computer Science, Pondicherry University.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1420" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="vendor/qrcode-generator-1.4.4.js" defer></script>
+  <script src="js/app.js" defer></script>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">QR Code Generator</h1>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="regNo">Registration Number:</label>
-                    <input type="text" class="form-control" id="regNo" placeholder="Enter Registration Number">
-                </div>
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" placeholder="Enter Name">
-                </div>
-                <button class="btn btn-primary" id="generateQR">Generate QR Code</button>
-            </div>
-            <div class="col-md-6">
-                <div class="qr-code-container">
-                    <div id="combinedImageContainer" class="qr-code"></div>
-                </div>
-                <a id="downloadLink" style="display: none;" download="combined.png">Download Combined Image</a>
-            </div>
+  <main class="shell">
+    <header class="brand">
+      <img src="assets/logo.png" alt="Pondicherry University logo" width="72" height="72">
+      <div>
+        <p class="brand__uni">Pondicherry University</p>
+        <p class="brand__dept">Department of Computer Science</p>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="title">
+      <div class="card__form">
+        <h1 id="title">Get your attendance QR</h1>
+        <p class="lead">Enter your register number. The QR is generated on your device — nothing is uploaded.</p>
+
+        <form id="qr-form" novalidate>
+          <label class="field">
+            <span class="field__label">Register number</span>
+            <input id="reg-no" name="regNo" type="text" inputmode="numeric" autocomplete="off"
+                   pattern="\d{6,12}" maxlength="12" placeholder="e.g. 22370001" required
+                   aria-describedby="reg-hint">
+            <span class="field__hint" id="reg-hint">Digits only, 6–12 characters.</span>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Name <span class="optional">(optional, printed under the QR)</span></span>
+            <input id="name" name="name" type="text" autocomplete="name" maxlength="40" placeholder="Your name">
+          </label>
+
+          <div class="actions">
+            <button type="submit" class="btn btn--primary" id="download" disabled>
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg>
+              Download PNG
+            </button>
+            <button type="button" class="btn btn--ghost" id="share" hidden disabled>
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v14"/></svg>
+              Share
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <figure class="card__preview">
+        <div class="preview" id="preview" data-state="empty">
+          <canvas id="qr-canvas" width="600" height="720" aria-label="Attendance QR code preview" role="img"></canvas>
+          <p class="preview__placeholder">Your QR will appear here</p>
         </div>
-    </div>
+        <figcaption id="status" class="status" role="status" aria-live="polite"></figcaption>
+      </figure>
+    </section>
 
-    <!-- Include Bootstrap JavaScript (optional) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
-    <!-- Include QR code library JavaScript -->
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script>
-        // Get the registration number and name input fields
-        const regNoInput = document.getElementById('regNo');
-        const nameInput = document.getElementById('name');
-
-        // Get the combined image container and download link elements
-        const combinedImageContainer = document.getElementById('combinedImageContainer');
-        const downloadLink = document.getElementById('downloadLink');
-
-        // Function to generate and display the combined image
-        function generateCombinedImage() {
-            const regNo = regNoInput.value;
-            const name = nameInput.value;
-
-            if (regNo) {
-                // Create a new QRCode instance
-                const qrcode = new QRCode(combinedImageContainer, {
-                    text: regNo,
-                    width: 290, // Adjust the width as needed
-                    height: 290, // Adjust the height as needed
-                });
-
-                // Create a div element for displaying the text
-                const textDiv = document.createElement('div');
-                textDiv.innerHTML = `<p>Registration Number: ${regNo}</p><p>Name: ${name}</p>`;
-                combinedImageContainer.appendChild(textDiv);
-
-                // Enable the download link and set its href attribute to the combined image
-                html2canvas(combinedImageContainer, { scale: 2 }).then(canvas => {
-                    downloadLink.href = canvas.toDataURL('image/png');
-                    downloadLink.style.display = 'block';
-                });
-            } else {
-                // Clear the combined image container and hide the download link if there's no input
-                combinedImageContainer.innerHTML = '';
-                downloadLink.style.display = 'none';
-            }
-        }
-
-        // Attach an event listener to the "Generate Combined Image" button
-        document.getElementById('generateQR').addEventListener('click', generateCombinedImage);
-
-        // Initial combined image generation (empty)
-        generateCombinedImage();
-    </script>
+    <footer class="foot">
+      <p>Styles originally by @mLokadev · <a href="https://github.com/Chandirasegaran/PU-Attendance-QR">Source on GitHub</a></p>
+    </footer>
+  </main>
 </body>
 </html>
