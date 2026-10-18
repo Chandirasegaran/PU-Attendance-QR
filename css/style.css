@@ -140,7 +140,7 @@ input:focus-visible {
 
 .preview {
   position: relative;
-  aspect-ratio: 5 / 6;
+  aspect-ratio: 3 / 4;
   border-radius: 14px;
   border: 1.5px dashed var(--border);
   background: var(--bg);
@@ -152,9 +152,7 @@ input:focus-visible {
   width: 100%;
   height: 100%;
   display: block;
-  opacity: 0;
-  transform: scale(0.97);
-  transition: opacity 0.2s, transform 0.2s;
+  visibility: hidden;
 }
 .preview__placeholder {
   position: absolute;
@@ -162,15 +160,74 @@ input:focus-visible {
   color: var(--muted);
   font-size: 0.95rem;
 }
-.preview[data-state="ready"] { border-style: solid; background: #fff; }
-.preview[data-state="ready"] canvas { opacity: 1; transform: none; }
+.preview[data-state="ready"] { border-style: solid; background: #fff; border-color: transparent; }
+.preview[data-state="ready"] canvas { visibility: visible; }
+
+/* Scan line that sweeps once over a freshly revealed QR. */
+.preview::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22%;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--primary) 30%, transparent), transparent);
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.preview.reveal { animation: preview-glow 0.6s ease-out; }
+.preview.reveal canvas { animation: qr-in 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
+.preview.reveal::after { animation: scan 0.5s ease-out; }
+.preview.tick canvas { animation: qr-tick 0.14s ease-out; }
 .preview[data-state="ready"] .preview__placeholder { display: none; }
 
 .status { min-height: 1.5em; font-size: 0.88rem; color: var(--muted); text-align: center; }
 .status[data-tone="ok"] { color: var(--ok); }
 
-.foot { text-align: center; color: var(--muted); font-size: 0.85rem; }
-.foot a { color: inherit; }
+/* Entrance */
+.brand, .card { animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.card { animation-delay: 0.06s; }
+.card__form > * { animation: rise 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.card__form > :nth-child(2) { animation-delay: 0.1s; }
+.card__form > :nth-child(3) { animation-delay: 0.14s; }
+
+.field input { transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
+.field input:focus-visible { transform: translateY(-1px); }
+.field.shake { animation: shake 0.32s ease-in-out; }
+
+.btn--primary:not(:disabled):hover { box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 35%, transparent); }
+.btn--primary:not(:disabled) { transition: background-color 0.15s, transform 0.1s, box-shadow 0.2s, opacity 0.15s; }
+.btn.done { animation: done 0.5s ease-out; }
+.status[data-tone="ok"] { animation: rise 0.25s ease-out; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes qr-in {
+  from { opacity: 0; transform: scale(0.9); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes qr-tick {
+  from { opacity: 0.55; transform: scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes scan {
+  0% { opacity: 1; transform: translateY(-100%); }
+  100% { opacity: 0; transform: translateY(460%); }
+}
+@keyframes preview-glow {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 45%, transparent); }
+  100% { box-shadow: 0 0 0 14px transparent; }
+}
+@keyframes shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+@keyframes done {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 60%, transparent); transform: scale(0.97); }
+  40% { transform: scale(1.03); }
+  100% { box-shadow: 0 0 0 16px transparent; transform: none; }
+}
 
 @media (max-width: 720px) {
   .card { grid-template-columns: 1fr; }
@@ -180,5 +237,5 @@ input:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }

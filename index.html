@@ -12,9 +12,11 @@
   <link rel="apple-touch-icon" href="assets/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap">
+  <!-- Fonts load without blocking first paint; system fonts are used until they arrive. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="css/style.css">
   <script src="vendor/qrcode-generator-1.4.4.js" defer></script>
+  <script src="js/logo-data.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -61,16 +63,12 @@
 
       <figure class="card__preview">
         <div class="preview" id="preview" data-state="empty">
-          <canvas id="qr-canvas" width="600" height="720" aria-label="Attendance QR code preview" role="img"></canvas>
+          <canvas id="qr-canvas" width="1080" height="1440" aria-label="Attendance QR code preview" role="img"></canvas>
           <p class="preview__placeholder">Your QR will appear here</p>
         </div>
         <figcaption id="status" class="status" role="status" aria-live="polite"></figcaption>
       </figure>
     </section>
-
-    <footer class="foot">
-      <p>Styles originally by @mLokadev · <a href="https://github.com/Chandirasegaran/PU-Attendance-QR">Source on GitHub</a></p>
-    </footer>
   </main>
 </body>
 </html>
